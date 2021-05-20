@@ -1,26 +1,31 @@
 document.addEventListener('DOMContentLoaded', setUpPage);
 
+const cards = document.querySelectorAll('.card');
+
 let imageText=[];
 let gameBoard = document.getElementById("gameBoard")
-let cards = []
 const counter = document.getElementById('clicks');
-const counterLabel = document.getElementById('label');
+
+const loadedMessage = document.querySelector('H4');
 let hasFlippedCard = false;
 let preventFliping = false; //prevents a player from clicking faster than the game can evaluate the results
 let firstCard;
 let secondCard;
 let clickCount = 0;
 let pairsFound = 0;
+let firstIndex = 0
+let secondIndex = 1;
+let loadCount = 1;
+let pairsToFind = cards.length / 2;
+
 
 function setUpPage (){
     let countries = ['United States', 'Canada', 'Mexico', 'Iraq'];
-
+	iMultiplier = 0;
     for (let i = 0; i < countries.length; i++){
+		
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
-        myFetch(url, i);
-        // console.log(imageText)
-        // buildBoard(i)
-
+        myFetch(url);
     }
     // buildBoard();
 }
@@ -31,54 +36,44 @@ async function myFetch(url) {
     if (response.ok) { // if HTTP-status is 200-299
         // get the response body (the method explained below)
         let json = await response.json();
-        // console.log(json.image)
+
         let image = json.image
         let alt = json.alt
-        // console.log(json)
-        // console.log(image)
-        buildBoard(image, alt)
+
+        buildBoard(image, alt, firstIndex, secondIndex)
+		firstIndex += 2;
+		secondIndex += 2;
         
     } else {
         alert("HTTP-Error: " + response.status);
     }
+	loadedMessage.innerText = "Images Loaded. Start Playing!"
 }
 
-function buildBoard(image, alt){
-    // for (let i = 0; i < 3; i++){
-        cardDiv1 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv1.classList.add("card")
-        cardDiv1.dataset.type = alt
+function buildBoard(image, alt, firstIndex, secondIndex){
+	card1 = cards[firstIndex]
+	card1.dataset.type = alt
+	// card1.classList.add('card')
 
-        image1 = cardDiv1.appendChild(document.createElement("img"));
-        image1.classList.add("image");
-        image1.classList.add("hide");
-        image1.src = "data:image/png;base64," + image;
-        image1.alt = "{{imageAlt}}";
-        // image1.dataset.type = alt
+	image1 = card1.appendChild(document.createElement("img"));
+	image1.classList.add("image");
+	image1.classList.add("hide");
+	image1.src = "data:image/png;base64," + image;
+	image1.alt = "{{imageAlt}}";
 
-        cardDiv2 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv2.classList.add("card")
-        cardDiv2.dataset.type = alt
+	card2 = cards[secondIndex]
+	card2.dataset.type = alt
+	// card2.classList.add('card')
 
-        image2 = cardDiv2.appendChild(document.createElement("img"));
-        image2.classList.add("image");
-        image2.classList.add("hide");
-        image2.src = "data:image/png;base64," + image;
-        image2.alt = "{{imageAlt}}";
-        // image2.dataset.type = alt
+	image2 = card2.appendChild(document.createElement("img"));
+	image2.classList.add("image");
+	image2.classList.add("hide");
+	image2.src = "data:image/png;base64," + image;
+	image2.alt = "{{imageAlt}}";
 
-        cards.push(cardDiv1)
-        cards.push(cardDiv2)
-        cardDiv1.addEventListener('click', showCard)
-        cardDiv2.addEventListener('click', showCard)
-
-
-    // }
 }
 
 //inital variables for the game
-
-
 function showCard() {
 	if (preventFliping){
 		return;
@@ -115,7 +110,6 @@ function checkPair() {
   hideCards();
 }
 
-
 function hideCards() {
   lockBoard = true;
 
@@ -131,12 +125,12 @@ function hideCards() {
 }
 
 function resetBoard() {
-  hasFlippedCard = false;
-  firstCard = null;
-  secondCard = null;
-//   if(pairsFound == pairsToFind){
-// 	  gameWon();
-//   }
+	hasFlippedCard = false;
+	firstCard = null;
+	secondCard = null;
+	if(pairsFound == pairsToFind){
+	gameWon();
+	}
 }
 
 function gameWon(){
@@ -151,7 +145,7 @@ function gameWon(){
   });
 })();
 
-// cards.forEach(card => card.addEventListener('click', showCard));
+cards.forEach(card => card.addEventListener('click', showCard));
 
 
 
