@@ -27,7 +27,7 @@ function setUpPage (){
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
         myFetch(url);
     }
-    // buildBoard();
+    
 }
 
 async function myFetch(url) {
@@ -48,6 +48,8 @@ async function myFetch(url) {
         alert("HTTP-Error: " + response.status);
     }
 	loadedMessage.innerText = "Images Loaded. Start Playing!"
+	loadedMessage.classList.add('image-loaded')
+
 }
 
 function buildBoard(image, alt, firstIndex, secondIndex){
@@ -134,7 +136,7 @@ function resetBoard() {
 }
 
 function gameWon(){
-	document.body.classList.add('win');
+	alert("CONGRATULATIONS! You've found all of the pairs")
 }
 
 //shuffle cards so they don't just appear next to each other like the HTML has them laid out.

@@ -33,27 +33,26 @@ function setUpPage (){
 async function myFetch(url) {
     let response = await fetch(url);
 
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
+    if (response.ok) {
         let json = await response.json();
 
         let image = json.image
         let alt = json.alt
 
         buildBoard(image, alt, firstIndex, secondIndex)
-		firstIndex += 2;
-		secondIndex += 2;
+        firstIndex += 2;
+        secondIndex += 2;
         
     } else {
         alert("HTTP-Error: " + response.status);
     }
 	loadedMessage.innerText = "Images Loaded. Start Playing!"
+  loadedMessage.classList.add('image-loaded')
 }
 
 function buildBoard(image, alt, firstIndex, secondIndex){
 	card1 = cards[firstIndex]
 	card1.dataset.type = alt
-	// card1.classList.add('card')
 
 	image1 = card1.appendChild(document.createElement("img"));
 	image1.classList.add("image");
@@ -63,7 +62,6 @@ function buildBoard(image, alt, firstIndex, secondIndex){
 
 	card2 = cards[secondIndex]
 	card2.dataset.type = alt
-	// card2.classList.add('card')
 
 	image2 = card2.appendChild(document.createElement("img"));
 	image2.classList.add("image");
@@ -134,7 +132,7 @@ function resetBoard() {
 }
 
 function gameWon(){
-	document.body.classList.add('win');
+	alert("CONGRATULATIONS! You've found all of the pairs")
 }
 
 //shuffle cards so they don't just appear next to each other like the HTML has them laid out.
