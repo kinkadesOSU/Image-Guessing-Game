@@ -1,84 +1,89 @@
 document.addEventListener('DOMContentLoaded', setUpPage);
 
+const cards = document.querySelectorAll('.card');
+
 let imageText=[];
 let gameBoard = document.getElementById("gameBoard")
-let cards = []
 const counter = document.getElementById('clicks');
-const counterLabel = document.getElementById('label');
+
+const loadedMessage = document.querySelector('H4');
 let hasFlippedCard = false;
 let preventFliping = false; //prevents a player from clicking faster than the game can evaluate the results
 let firstCard;
 let secondCard;
 let clickCount = 0;
 let pairsFound = 0;
+let firstIndex = 0
+let secondIndex = 1;
+let loadCount = 1;
+let pairsToFind = cards.length / 2;
 
-function setUpPage (){
+var totalSeconds = 0;
+
+
+async function setUpPage (){
     let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand', 'Spain', 'Egypt'];
-
+	iMultiplier = 0;
     for (let i = 0; i < countries.length; i++){
+		
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
-        myFetch(url, i);
-        // console.log(imageText)
-        // buildBoard(i)
+        // myFetch(url);
 
+		let response = await fetch(url);
+		if (response.ok) {
+			let json = await response.json();
+	
+			let image = json.image
+			let alt = json.alt
+	
+			buildBoard(image, alt, firstIndex, secondIndex)
+			firstIndex += 2;
+			secondIndex += 2;
+			
+		} else {
+			alert("HTTP-Error: " + response.status);
+		}
     }
-    // buildBoard();
+	setInterval(function(){
+		++totalSeconds;
+		var hour = Math.floor(totalSeconds /3600);
+		var minute = Math.floor((totalSeconds - hour*3600)/60);
+		var seconds = totalSeconds - (hour*3600 + minute*60);
+		if(hour < 10)
+		  hour = "0"+hour;
+		if(minute < 10)
+		  minute = "0"+minute;
+		if(seconds < 10)
+		  seconds = "0"+seconds;
+		document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+	}, 1000)
+
+	loadedMessage.innerText = "Images Loaded. Start Playing!"
+	loadedMessage.classList.add('image-loaded')
 }
 
-async function myFetch(url) {
-    let response = await fetch(url);
+function buildBoard(image, alt, firstIndex, secondIndex){
+	card1 = cards[firstIndex]
+	card1.dataset.type = alt
 
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json();
-        // console.log(json.image)
-        let image = json.image
-        let alt = json.alt
-        // console.log(json)
-        // console.log(image)
-        buildBoard(image, alt)
-        
-    } else {
-        alert("HTTP-Error: " + response.status);
-    }
-}
+	image1 = card1.appendChild(document.createElement("img"));
+	image1.classList.add("image");
+	image1.classList.add("hide");
+	image1.src = "data:image/png;base64," + image;
+	image1.alt = "{{imageAlt}}";
 
-function buildBoard(image, alt){
-    // for (let i = 0; i < 3; i++){
-        cardDiv1 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv1.classList.add("card")
-        cardDiv1.dataset.type = alt
+	card2 = cards[secondIndex]
+	card2.dataset.type = alt
 
-        image1 = cardDiv1.appendChild(document.createElement("img"));
-        image1.classList.add("image");
-        image1.classList.add("hide");
-        image1.src = "data:image/png;base64," + image;
-        image1.alt = "{{imageAlt}}";
-        // image1.dataset.type = alt
+	image2 = card2.appendChild(document.createElement("img"));
+	image2.classList.add("image");
+	image2.classList.add("hide");
+	image2.src = "data:image/png;base64," + image;
+	image2.alt = "{{imageAlt}}";
 
-        cardDiv2 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv2.classList.add("card")
-        cardDiv2.dataset.type = alt
-
-        image2 = cardDiv2.appendChild(document.createElement("img"));
-        image2.classList.add("image");
-        image2.classList.add("hide");
-        image2.src = "data:image/png;base64," + image;
-        image2.alt = "{{imageAlt}}";
-        // image2.dataset.type = alt
-
-        cards.push(cardDiv1)
-        cards.push(cardDiv2)
-        cardDiv1.addEventListener('click', showCard)
-        cardDiv2.addEventListener('click', showCard)
-
-
-    // }
 }
 
 //inital variables for the game
-
-
 function showCard() {
 	if (preventFliping){
 		return;
@@ -115,7 +120,6 @@ function checkPair() {
   hideCards();
 }
 
-
 function hideCards() {
   lockBoard = true;
 
@@ -131,16 +135,16 @@ function hideCards() {
 }
 
 function resetBoard() {
-  hasFlippedCard = false;
-  firstCard = null;
-  secondCard = null;
-//   if(pairsFound == pairsToFind){
-// 	  gameWon();
-//   }
+	hasFlippedCard = false;
+	firstCard = null;
+	secondCard = null;
+	if(pairsFound == pairsToFind){
+	gameWon();
+	}
 }
 
 function gameWon(){
-	document.body.classList.add('win');
+	alert("CONGRATULATIONS! You've found all of the pairs")
 }
 
 //shuffle cards so they don't just appear next to each other like the HTML has them laid out.
@@ -151,7 +155,7 @@ function gameWon(){
   });
 })();
 
-// cards.forEach(card => card.addEventListener('click', showCard));
+cards.forEach(card => card.addEventListener('click', showCard));
 
 
 
