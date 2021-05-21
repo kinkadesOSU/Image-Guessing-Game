@@ -18,39 +18,48 @@ let secondIndex = 1;
 let loadCount = 1;
 let pairsToFind = cards.length / 2;
 
-var timerVar = setInterval(countTimer, 1000);
 var totalSeconds = 0;
 
 
-function setUpPage (){
+async function setUpPage (){
     let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand', 'Spain', 'Egypt'];
 	iMultiplier = 0;
     for (let i = 0; i < countries.length; i++){
 		
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
-        myFetch(url);
+        // myFetch(url);
+
+		let response = await fetch(url);
+		if (response.ok) {
+			let json = await response.json();
+	
+			let image = json.image
+			let alt = json.alt
+	
+			buildBoard(image, alt, firstIndex, secondIndex)
+			firstIndex += 2;
+			secondIndex += 2;
+			
+		} else {
+			alert("HTTP-Error: " + response.status);
+		}
     }
-    // buildBoard();
-}
+	setInterval(function(){
+		++totalSeconds;
+		var hour = Math.floor(totalSeconds /3600);
+		var minute = Math.floor((totalSeconds - hour*3600)/60);
+		var seconds = totalSeconds - (hour*3600 + minute*60);
+		if(hour < 10)
+		  hour = "0"+hour;
+		if(minute < 10)
+		  minute = "0"+minute;
+		if(seconds < 10)
+		  seconds = "0"+seconds;
+		document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+	}, 1000)
 
-async function myFetch(url) {
-    let response = await fetch(url);
-
-    if (response.ok) {
-        let json = await response.json();
-
-        let image = json.image
-        let alt = json.alt
-
-        buildBoard(image, alt, firstIndex, secondIndex)
-        firstIndex += 2;
-        secondIndex += 2;
-        
-    } else {
-        alert("HTTP-Error: " + response.status);
-    }
 	loadedMessage.innerText = "Images Loaded. Start Playing!"
-  loadedMessage.classList.add('image-loaded')
+	loadedMessage.classList.add('image-loaded')
 }
 
 function buildBoard(image, alt, firstIndex, secondIndex){
@@ -147,21 +156,6 @@ function gameWon(){
 })();
 
 cards.forEach(card => card.addEventListener('click', showCard));
-
-function countTimer() {
-	++totalSeconds;
-	var hour = Math.floor(totalSeconds /3600);
-	var minute = Math.floor((totalSeconds - hour*3600)/60);
-	var seconds = totalSeconds - (hour*3600 + minute*60);
-	if(hour < 10)
-	  hour = "0"+hour;
-	if(minute < 10)
-	  minute = "0"+minute;
-	if(seconds < 10)
-	  seconds = "0"+seconds;
-	document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
- }
-
 
 
 

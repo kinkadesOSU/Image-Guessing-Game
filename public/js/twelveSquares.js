@@ -18,49 +18,53 @@ let secondIndex = 1;
 let loadCount = 1;
 let pairsToFind = cards.length / 2;
 
-var timerVar = setInterval(countTimer, 1000);
 var totalSeconds = 0;
 
 
-function setUpPage (){
-    let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand'];
+async function setUpPage (){
+    let countries = ['United States', 'Canada', 'Mexico', 'Australia', 'Spain', 'Egypt'];
 	iMultiplier = 0;
     for (let i = 0; i < countries.length; i++){
 		
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
-        myFetch(url);
+        // myFetch(url);
+
+		let response = await fetch(url);
+		if (response.ok) {
+			let json = await response.json();
+	
+			let image = json.image
+			let alt = json.alt
+	
+			buildBoard(image, alt, firstIndex, secondIndex)
+			firstIndex += 2;
+			secondIndex += 2;
+			
+		} else {
+			alert("HTTP-Error: " + response.status);
+		}
     }
-    
-}
+	setInterval(function(){
+		++totalSeconds;
+		var hour = Math.floor(totalSeconds /3600);
+		var minute = Math.floor((totalSeconds - hour*3600)/60);
+		var seconds = totalSeconds - (hour*3600 + minute*60);
+		if(hour < 10)
+		  hour = "0"+hour;
+		if(minute < 10)
+		  minute = "0"+minute;
+		if(seconds < 10)
+		  seconds = "0"+seconds;
+		document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
+	}, 1000)
 
-async function myFetch(url) {
-    let response = await fetch(url);
-
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json();
-
-        let image = json.image
-        let alt = json.alt
-
-        buildBoard(image, alt, firstIndex, secondIndex)
-		firstIndex += 2;
-		secondIndex += 2;
-		
-        
-    } else {
-        alert("HTTP-Error: " + response.status);
-    }
 	loadedMessage.innerText = "Images Loaded. Start Playing!"
 	loadedMessage.classList.add('image-loaded')
-	totalSeconds = -1
 }
-
 
 function buildBoard(image, alt, firstIndex, secondIndex){
 	card1 = cards[firstIndex]
 	card1.dataset.type = alt
-	// card1.classList.add('card')
 
 	image1 = card1.appendChild(document.createElement("img"));
 	image1.classList.add("image");
@@ -70,7 +74,6 @@ function buildBoard(image, alt, firstIndex, secondIndex){
 
 	card2 = cards[secondIndex]
 	card2.dataset.type = alt
-	// card2.classList.add('card')
 
 	image2 = card2.appendChild(document.createElement("img"));
 	image2.classList.add("image");
@@ -154,18 +157,6 @@ function gameWon(){
 
 cards.forEach(card => card.addEventListener('click', showCard));
 
-function countTimer() {
-	++totalSeconds;
-	var hour = Math.floor(totalSeconds /3600);
-	var minute = Math.floor((totalSeconds - hour*3600)/60);
-	var seconds = totalSeconds - (hour*3600 + minute*60);
-	if(hour < 10)
-	  hour = "0"+hour;
-	if(minute < 10)
-	  minute = "0"+minute;
-	if(seconds < 10)
-	  seconds = "0"+seconds;
-	document.getElementById("timer").innerHTML = hour + ":" + minute + ":" + seconds;
- }
+
 
 
