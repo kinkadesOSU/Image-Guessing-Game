@@ -17,7 +17,11 @@
   margin: 5px;
   position: relative;
   border: 1px black solid;
-  background-color: aqua;
+  background-color: #C2B280;
+}
+
+.card:hover{
+  background-color: #9c8e64
 }
 
 .image{
@@ -30,9 +34,6 @@
   visibility: hidden;
 }
 
-.win{
-  background-color: #00ff00;
-}
 
 .center{
     text-align: center;

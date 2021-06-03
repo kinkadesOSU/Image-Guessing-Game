@@ -5,24 +5,27 @@ const cardsDivs = document.querySelectorAll('.card');
 let images=[];
 let descriptions = []
 let cards = []
+
 let loaded = 0
+let clickCount = 0;
+let pairsFound = 0;
+let pairsToFind = 6;
+let totalSeconds = 0;
 
-let gameBoard = document.getElementById("gameBoard")
-
+const gameBoard = document.getElementById("gameBoard")
 const counter = document.getElementById('clicks');
 const counterLabel = document.getElementById('label');
 const timerLabel = document.getElementById("timer");
 const loadCounter = document.getElementById("load-counter")
+const progress = document.getElementById("progress")
+const loadedMessage = document.querySelector('H4');
+
 let hasFlippedCard = false;
 let preventFliping = false; //prevents a player from clicking faster than the game can evaluate the results
 let firstCard;
 let secondCard;
-let clickCount = 0;
-let pairsFound = 0;
-let pairsToFind = 6;
 
-let totalSeconds = 0;
-const loadedMessage = document.querySelector('H4');
+
 
 async function setUpPage (){
     let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand'];
@@ -108,6 +111,9 @@ function showCard() {
 function checkPair() {
   if(firstCard.dataset.type === secondCard.dataset.type){
 	pairsFound += 1;
+	firstCard.removeEventListener('click', showCard)
+	secondCard.removeEventListener('click', showCard)
+
 	resetBoard();
 	return;
   }
@@ -140,7 +146,7 @@ function resetBoard() {
 
 function gameWon(){
 	clearInterval(timer)
-	timerLabel.innerHTML = timerLabel.innerHTML + ' - Game WON!!!'
+	progress.innerHTML = 'GAME WON!!!'
 }
 
 function shuffle() {
