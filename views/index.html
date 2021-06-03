@@ -4,15 +4,44 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="css/styles.css" rel="stylesheet">
     <title>Document</title>
 </head>
 <body>
-    <h1>Pick Your Board</h1>
-    <ul>
-        <li><a href="/eight">Eight Squares</a></li>
-        <li><a href="/twelve">Twelve Squares</a></li>
-        <li><a href="/sixteen">Sixteen Squares</a></li>        
-    </ul>
+    <h1 class = 'center'>Image Matching Game</h1>
+    
+    <div class = 'instructions center'>
+        <h3>Instructions</h3>
+        <p>
+            Select the number of squares you would like to play with. The page will then load. The game is ready to play when you see "Images Loaded. Start Playing!" in
+            a green box. You may now start picking images two at a time. If the images are a match, they will visible. If they
+            are not a match, they will flip back over and you can try again. The objective of the game is to find all pairs of images in as few tries as possible.
+        </p>
+    </div>
+
+    <div class = 'index-div'>
+        <a href="/eight">Eight Squares</a>
+    </div>
+    <div class="index-div">
+        <img class="home-images" src="img/eight.png" alt="">
+    </div>
+    
+    <div class = 'index-div'>
+        <a href="/twelve">Twelve Squares</a>
+    </div>
+    <div class="index-div">
+        <img class="home-images" src="img/twelve.png" alt="">
+    </div>
+
+    <div class = 'index-div'>
+        <a href="/sixteen">Sixteen Squares</a>
+    </div>
+    <div class="index-div">
+        <img class="home-images" src="img/sixteen.png" alt="">
+    </div>
+
+
+
 
 </body>
 </html>

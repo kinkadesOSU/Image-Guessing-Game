@@ -1,6 +1,8 @@
-document.addEventListener('DOMContentLoaded', setUpPage);
+playbtn = document.getElementById('play')
+resetbtn = document.getElementById('reset')
 
-const cardsDivs = document.querySelectorAll('.card');
+playbtn.addEventListener('click', setUpPage);
+resetbtn.addEventListener('click', resetGame);
 
 let images=[];
 let descriptions = []
@@ -12,11 +14,11 @@ let pairsFound = 0;
 let pairsToFind = 6;
 let totalSeconds = 0;
 
-const gameBoard = document.getElementById("gameBoard")
+const gameBoard = document.getElementById('gameBoard')
 const counter = document.getElementById('clicks');
 const counterLabel = document.getElementById('label');
 const timerLabel = document.getElementById("timer");
-const loadCounter = document.getElementById("load-counter")
+
 const progress = document.getElementById("progress")
 const loadedMessage = document.querySelector('H4');
 
@@ -25,10 +27,18 @@ let preventFliping = false; //prevents a player from clicking faster than the ga
 let firstCard;
 let secondCard;
 
-
-
 async function setUpPage (){
-    let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand'];
+    let country1 = document.getElementById('country-1').value
+    let country2 = document.getElementById('country-2').value
+    let country3 = document.getElementById('country-3').value
+    let country4 = document.getElementById('country-4').value
+    let country5 = document.getElementById('country-5').value
+    let country6 = document.getElementById('country-6').value
+
+    let countries = [country1,country2,country3,country4,country5,country6];
+
+    loadedMessage.innerHTML = '<span>Images Loading... (</span><span id=\'load-counter\'>0</span> of 12)'
+    const loadCounter = document.getElementById("load-counter")
 
     for (let i = 0; i < countries.length; i++){
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
@@ -44,8 +54,9 @@ async function setUpPage (){
 	addTimer()
     buildBoard(images, descriptions)
 	shuffle()
+    
+    
 	loadedMessage.innerText = "Images Loaded. Start Playing!"
-	loadedMessage.classList.add('image-loaded')
 }
 
 function addTimer(){
@@ -139,14 +150,36 @@ function resetBoard() {
 	hasFlippedCard = false;
 	firstCard = null;
 	secondCard = null;
-	  if(pairsFound == pairsToFind){
-		  gameWon();
-	  }
+	if(pairsFound == pairsToFind){
+		gameWon();
+	}
 }
 
 function gameWon(){
 	clearInterval(timer)
 	progress.innerHTML = 'GAME WON!!!'
+}
+
+function resetGame(){
+
+}
+
+function resetGame() {
+    while (gameBoard.firstChild) {
+        gameBoard.removeChild(gameBoard.firstChild);
+        clearInterval(timer)
+        loadedMessage.innerHTML = 'Pick Your Countries Below!'
+        timerLabel.innerHTML = '00:00:00'
+        images=[];
+        descriptions = []
+        cards = []
+
+        loaded = 0
+        clickCount = 0;
+        pairsFound = 0;
+        pairsToFind = 6;
+        totalSeconds = 0;
+    }
 }
 
 function shuffle() {
