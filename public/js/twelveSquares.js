@@ -1,83 +1,84 @@
 document.addEventListener('DOMContentLoaded', setUpPage);
 
-let imageText=[];
-let gameBoard = document.getElementById("gameBoard")
+const cardsDivs = document.querySelectorAll('.card');
+
+let images=[];
+let descriptions = []
 let cards = []
+let loaded = 0
+
+let gameBoard = document.getElementById("gameBoard")
+
 const counter = document.getElementById('clicks');
 const counterLabel = document.getElementById('label');
+const timerLabel = document.getElementById("timer");
+const loadCounter = document.getElementById("load-counter")
 let hasFlippedCard = false;
 let preventFliping = false; //prevents a player from clicking faster than the game can evaluate the results
 let firstCard;
 let secondCard;
 let clickCount = 0;
 let pairsFound = 0;
+let pairsToFind = 6;
 
-function setUpPage (){
+let totalSeconds = 0;
+const loadedMessage = document.querySelector('H4');
+
+async function setUpPage (){
     let countries = ['United States', 'Canada', 'Mexico', 'Iraq', 'Australia', 'New Zealand'];
 
     for (let i = 0; i < countries.length; i++){
         var url = "https://portfive.net/flag/image?keyword=" + countries[i];
-        myFetch(url, i);
-        // console.log(imageText)
-        // buildBoard(i)
+        const json = await axios.get(url);
 
-    }
-    // buildBoard();
-}
+        images.push(json.data.image);
+        descriptions.push(json.data.alt);
 
-async function myFetch(url) {
-    let response = await fetch(url);
-
-    if (response.ok) { // if HTTP-status is 200-299
-        // get the response body (the method explained below)
-        let json = await response.json();
-        // console.log(json.image)
-        let image = json.image
-        let alt = json.alt
-        // console.log(json)
-        // console.log(image)
-        buildBoard(image, alt)
+		loaded += 2
+		loadCounter.innerText = loaded
         
-    } else {
-        alert("HTTP-Error: " + response.status);
     }
+	addTimer()
+    buildBoard(images, descriptions)
+	shuffle()
+	loadedMessage.innerText = "Images Loaded. Start Playing!"
+	loadedMessage.classList.add('image-loaded')
 }
 
-function buildBoard(image, alt){
-    // for (let i = 0; i < 3; i++){
-        cardDiv1 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv1.classList.add("card")
-        cardDiv1.dataset.type = alt
-
-        image1 = cardDiv1.appendChild(document.createElement("img"));
-        image1.classList.add("image");
-        image1.classList.add("hide");
-        image1.src = "data:image/png;base64," + image;
-        image1.alt = "{{imageAlt}}";
-        // image1.dataset.type = alt
-
-        cardDiv2 = gameBoard.appendChild(document.createElement("div"));
-        cardDiv2.classList.add("card")
-        cardDiv2.dataset.type = alt
-
-        image2 = cardDiv2.appendChild(document.createElement("img"));
-        image2.classList.add("image");
-        image2.classList.add("hide");
-        image2.src = "data:image/png;base64," + image;
-        image2.alt = "{{imageAlt}}";
-        // image2.dataset.type = alt
-
-        cards.push(cardDiv1)
-        cards.push(cardDiv2)
-        cardDiv1.addEventListener('click', showCard)
-        cardDiv2.addEventListener('click', showCard)
-
-
-    // }
+function addTimer(){
+	timer = setInterval(function(){
+		++totalSeconds;
+		var hour = Math.floor(totalSeconds / 3600);
+		var minute = Math.floor((totalSeconds - hour*3600)/60);
+		var seconds = totalSeconds - (hour*3600 + minute*60);
+		if(hour < 10)
+		hour = "0"+hour;
+		if(minute < 10)
+		minute = "0"+minute;
+		if(seconds < 10)
+		seconds = "0"+seconds;
+		timerLabel.innerHTML = hour + ":" + minute + ":" + seconds;
+	}, 1000)	
 }
 
-//inital variables for the game
+function buildBoard(images, descriptions){
+	for (let i = 0; i < images.length; i++){
+		for (let j=0; j < 2; j++){
+			cardDiv = gameBoard.appendChild(document.createElement("div"));
+			cardDiv.classList.add("card")
+			cardDiv.dataset.type = descriptions[i]
 
+			image = cardDiv.appendChild(document.createElement("img"));
+			image.classList.add("image");
+			image.classList.add("hide");
+			image.src = "data:image/png;base64," + images[i];
+			image.alt = "{{imageAlt}}";
+
+			cards.push(cardDiv)
+			cardDiv.addEventListener('click', showCard)
+		}
+	}
+}
 
 function showCard() {
 	if (preventFliping){
@@ -111,47 +112,44 @@ function checkPair() {
 	return;
   }
 
-  // hide the cards if they don't match
   hideCards();
 }
 
-
 function hideCards() {
-  lockBoard = true;
+	lockBoard = true;
 
-  //gives the player time to see what they chose
-  setTimeout(() => {
-    firstCard = firstCard.firstElementChild
-    secondCard = secondCard.firstElementChild
+	//gives the player time to see what they chose
+	setTimeout(() => {
+		firstCard = firstCard.firstElementChild
+		secondCard = secondCard.firstElementChild
 
-    firstCard.classList.toggle('hide');
-    secondCard.classList.toggle('hide');
-    resetBoard();
-  }, 1000);
+		firstCard.classList.toggle('hide');
+		secondCard.classList.toggle('hide');
+		resetBoard();
+		}, 750);
 }
 
 function resetBoard() {
-  hasFlippedCard = false;
-  firstCard = null;
-  secondCard = null;
-//   if(pairsFound == pairsToFind){
-// 	  gameWon();
-//   }
+	hasFlippedCard = false;
+	firstCard = null;
+	secondCard = null;
+	  if(pairsFound == pairsToFind){
+		  gameWon();
+	  }
 }
 
 function gameWon(){
-	document.body.classList.add('win');
+	clearInterval(timer)
+	timerLabel.innerHTML = timerLabel.innerHTML + ' - Game WON!!!'
 }
 
-//shuffle cards so they don't just appear next to each other like the HTML has them laid out.
-(function shuffle() {
-  cards.forEach(card => {
-    let randomPos = Math.floor(Math.random() * 12);
-    card.style.order = randomPos;
-  });
-})();
+function shuffle() {
+	cards.forEach(card => {
+		let randomPos = Math.floor(Math.random() * 12);
+	card.style.order = randomPos;
+	});
+};
 
-// cards.forEach(card => card.addEventListener('click', showCard));
 
 
 

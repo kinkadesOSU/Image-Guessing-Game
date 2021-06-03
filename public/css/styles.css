@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+
 }
 
 .gameBoard {
@@ -8,7 +9,6 @@
   margin: auto;
   display: flex;
   flex-wrap: wrap;
-  /* align-items: center; */
 }
 
 .card {
@@ -30,13 +30,10 @@
   visibility: hidden;
 }
 
-.header,
-.footer{
-  text-align: center;
-  border-top: 10px;
-}
-
 .win{
   background-color: #00ff00;
 }
 
+.center{
+    text-align: center;
+}

@@ -9,19 +9,28 @@
 </head>
 <body>
 
-  <div class="header">
+  <div class='center'>
     <h1><span id="label">Tries: </span><span id="clicks">0</span></h1>
+    
+  </div>
+  <div class='center'>
+    <h4 class="header">
+      <span>Images Loading... (</span><span id='load-counter'>0</span> of 12)
+    </h4>
+    <div id="timer">00:00:00</div>
   </div>
   <section class="gameBoard" id="gameBoard">
     
   </section>
 
-  <div class="footer">
+  <div class="center">
     <a href="/"><button>Home</button></a>
   </div>
 
   <!-- <script src="js/scripts.js"></script> -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="js/twelveSquares.js"></script>
+  
 
 </body>
 </html>
