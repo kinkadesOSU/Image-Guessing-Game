@@ -79,7 +79,7 @@ function buildBoard(images, descriptions){
 	for (let i = 0; i < images.length; i++){
 		for (let j=0; j < 2; j++){
 			cardDiv = gameBoard.appendChild(document.createElement("div"));
-			cardDiv.classList.add("card")
+			cardDiv.classList.add("game-card")
 			cardDiv.dataset.type = descriptions[i]
 
 			image = cardDiv.appendChild(document.createElement("img"));

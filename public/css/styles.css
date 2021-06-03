@@ -11,7 +11,7 @@
   flex-wrap: wrap;
 }
 
-.card {
+.game-card {
   width: calc(25% - 10px);
   height: calc(33.333% - 10px);
   margin: 5px;
@@ -20,7 +20,7 @@
   background-color: #C2B280;
 }
 
-.card:hover{
+.game-card:hover{
   background-color: #9c8e64
 }
 
@@ -39,10 +39,6 @@
     text-align: center;
 }
 
-#play{
-    margin-top: 10px;
-}
-
 .index-div{
     text-align: center;
     margin-bottom: 20px;
@@ -53,4 +49,8 @@
     width:50px;
     height:50px;
     object-fit:cover;
+  }
+
+  .btn{
+      margin-top: 10px;
   }
