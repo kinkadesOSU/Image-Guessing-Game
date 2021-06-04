@@ -23,7 +23,6 @@ const progress = document.getElementById("progress")
 const loadedMessage = document.querySelector('H4');
 
 let hasFlippedCard = false;
-let preventFliping = false; //prevents a player from clicking faster than the game can evaluate the results
 let firstCard;
 let secondCard;
 
@@ -95,9 +94,6 @@ function buildBoard(images, descriptions){
 }
 
 function showCard() {
-	if (preventFliping){
-		return;
-	} 
 	if (this === firstCard){
 		return;
 	} 
